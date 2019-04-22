@@ -5,6 +5,7 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 
+import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
@@ -22,7 +23,7 @@ public class KafkaSynchronousProducer {
         Producer<String, String> producer = new KafkaProducer<>(props);
 
         for (int i = 0; i <= 10; i++) {
-            ProducerRecord<String, String> record = new ProducerRecord<>(topicName, key, value + i);
+            ProducerRecord<String, String> record = new ProducerRecord<>(topicName, key, value + i + new Date());
             try {
                 RecordMetadata metadata = producer.send(record).get();
                 System.out.println("Published!! with status" + metadata.offset());

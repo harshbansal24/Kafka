@@ -13,7 +13,7 @@ import java.util.Map;
  * Partitioner will check if the messages last value is divisable by 3 then it will send the message to first partition otherwise to second partition
  *
  */
-class SensorPartitioner implements Partitioner {
+class CustomPartitioner implements Partitioner {
 
     private String speedSensorName;
 

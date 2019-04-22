@@ -2,6 +2,7 @@ package com.kafka;
 
 import org.apache.kafka.clients.producer.*;
 
+import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
@@ -21,15 +22,19 @@ public class KafkaAsynchronousProducer {
             Producer<String, String> producer = new KafkaProducer<>(props);
 
             for (int i = 0; i <= 10; i++) {
-                ProducerRecord<String, String> record = new ProducerRecord<>(topicName, key, value + i);
+                ProducerRecord<String, String> record = new ProducerRecord<>(topicName, key, value + i + new Date());
                 try {
-                    producer.send(record, new Callback() {
-                        @Override
-                        public void onCompletion(RecordMetadata metadata, Exception exception) {
-                            System.out.println("Published !!" + metadata.partition() + " " + metadata.offset());
-                        }
-                    });
                     Thread.sleep(1000);
+
+                    producer.send(record, (metadata, exception) -> {
+                        System.out.println("Published !!" + metadata.partition() + " " + metadata.offset());
+                    });
+//                    producer.send(record, new Callback() {
+//                        @Override
+//                        public void onCompletion(RecordMetadata metadata, Exception exception) {
+//                            System.out.println("Published !!" + metadata.partition() + " " + metadata.offset());
+//                        }
+//                    });
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
