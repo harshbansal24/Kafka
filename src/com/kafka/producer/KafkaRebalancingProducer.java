@@ -1,18 +1,18 @@
-package com.kafka;
+package com.kafka.producer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 
-import java.util.Date;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
-public class KafkaSynchronousProducer {
+public class KafkaRebalancingProducer {
     public static void main(String args[]) {
-        String key = "Key1";
-        String value = "Value-";
+        String key1 = "Key1";
+        String key2 = "Key2";
+        String key3 = "Key3";
+        String value1 = "Value-Partition1-";
+        String value2 = "Value-Partition2-";
         String topicName = "test-KafkaHarsh";
 
         Properties props = new Properties();
@@ -23,14 +23,13 @@ public class KafkaSynchronousProducer {
         Producer<String, String> producer = new KafkaProducer<>(props);
 
         for (int i = 0; i <= 10; i++) {
-            ProducerRecord<String, String> record = new ProducerRecord<>(topicName, key, value + i + new Date());
-            try {
-                RecordMetadata metadata = producer.send(record).get();
-                System.out.println("Published!! with status" + metadata.offset());
-                Thread.sleep(1000);
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
+            ProducerRecord<String, String> record = new ProducerRecord<>(topicName, 0, key1, value1 + i);
+            ProducerRecord<String, String> record2 = new ProducerRecord<>(topicName, 1, key2, value2 + i);
+            ProducerRecord<String, String> record3 = new ProducerRecord<>(topicName, 2, key3, value2 + i);
+            producer.send(record);
+            producer.send(record2);
+            producer.send(record3);
+            System.out.println("Published!!");
         }
         producer.close();
         System.out.println("Simple Producer Closed");
